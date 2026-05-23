@@ -154,15 +154,11 @@
 
 /* Responsive */
 @media (max-width: 900px) {
-  .header-inner { grid-template-columns: auto 1fr auto; }
-  .nav { display: none; }
-  .hamburger { display: flex; }
-  .header-search { width: 140px; }
-}
-@media (max-width: 768px) {
   :root { --header-h: 56px; }
-  .logo { font-size: 22px; padding: 0 12px; }
+  .header-inner { grid-template-columns: auto 1fr auto; }
+  .logo { font-size: 20px; padding: 0 8px; }
   .header-search { display: none; }
+  .hamburger { display: flex; }
   .nav {
     position: fixed; top: 0; left: -100%; width: 80%; max-width: 300px;
     height: 100vh; background: var(--white);

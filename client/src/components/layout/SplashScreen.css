@@ -14,8 +14,8 @@
   overflow: hidden;
   transform: translateY(0);
   box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-  transition: transform 0.7s cubic-bezier(0.85, 0, 0.15, 1),
-              box-shadow 0.7s cubic-bezier(0.85, 0, 0.15, 1);
+  transition: transform 1.0s cubic-bezier(0.85, 0, 0.15, 1),
+              box-shadow 1.0s cubic-bezier(0.85, 0, 0.15, 1);
   will-change: transform;
   contain: paint; /* Premium isolation: prevents any layout/paint changes in storefront from affecting splash performance */
 }
@@ -116,7 +116,7 @@
 
 /* Flicker Animation applied to the wrapper */
 .splash-logo-wrapper.flickering {
-  animation: logoElectricFlicker 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: logoElectricFlicker 1.0s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
 /* After flickering is completed, maintain a solid illuminated drop-shadow glow */
@@ -178,7 +178,7 @@
   );
   
   /* Hardware-accelerated width transition */
-  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 2.0s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: width;
 }
 

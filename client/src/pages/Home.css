@@ -1,5 +1,6 @@
 /* Hero Slider */
-.hero-slider { position: relative; overflow: hidden; height: calc(100vh - var(--header-h) - var(--announce-h)); min-height: 480px; max-height: 720px; }
+.hero-slider { position: relative; overflow: hidden; height: calc(100vh - var(--header-h) - var(--announce-h)); min-height: 480px; max-height: 720px; cursor: grab; }
+.hero-slider:active { cursor: grabbing; }
 .slide { position: absolute; inset: 0; display: flex; align-items: flex-end; opacity: 0; transition: opacity 0.9s ease; }
 .slide.active { opacity: 1; z-index: 1; }
 .slide-bg { position: absolute; inset: 0; background-size: cover; background-position: center top; }
@@ -89,7 +90,8 @@
 
 /* Testimonials */
 .testimonials { padding: 64px 0; background: var(--white); }
-.testimonials-slider { position: relative; max-width: 680px; margin: 0 auto 24px; }
+.testimonials-slider { position: relative; max-width: 680px; margin: 0 auto 24px; cursor: grab; }
+.testimonials-slider:active { cursor: grabbing; }
 .testimonial-card { display: none; background: var(--light-gray); padding: 36px; text-align: center; }
 .testimonial-card.active { display: block; }
 .stars { font-size: 18px; color: #f4a261; margin-bottom: 16px; letter-spacing: 2px; }

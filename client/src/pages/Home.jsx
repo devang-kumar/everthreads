@@ -53,6 +53,104 @@ export default function Home() {
   const slideTimer = useRef(null)
   const navigate = useNavigate()
 
+  // Swipe / Drag Gestures for Carousels
+  const touchStartX = useRef(0)
+  const touchEndX = useRef(0)
+  const mouseStartX = useRef(0)
+  const isDragging = useRef(false)
+  const minSwipeDistance = 50
+
+  // 1. Hero Slider gestures
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.touches[0].clientX
+  }
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return
+    const distance = touchStartX.current - touchEndX.current
+    if (distance > minSwipeDistance) {
+      goSlide((slide + 1) % SLIDES.length)
+    } else if (distance < -minSwipeDistance) {
+      goSlide((slide - 1 + SLIDES.length) % SLIDES.length)
+    }
+    touchStartX.current = 0
+    touchEndX.current = 0
+  }
+
+  const handleMouseDown = (e) => {
+    if (e.button !== 0) return // Left click only
+    mouseStartX.current = e.clientX
+    isDragging.current = true
+  }
+  const handleMouseMove = (e) => {
+    if (!isDragging.current) return
+    e.preventDefault()
+  }
+  const handleMouseUp = (e) => {
+    if (!isDragging.current) return
+    const distance = mouseStartX.current - e.clientX
+    if (distance > minSwipeDistance) {
+      goSlide((slide + 1) % SLIDES.length)
+    } else if (distance < -minSwipeDistance) {
+      goSlide((slide - 1 + SLIDES.length) % SLIDES.length)
+    }
+    isDragging.current = false
+    mouseStartX.current = 0
+  }
+  const handleMouseLeave = () => {
+    isDragging.current = false
+  }
+
+  // 2. Testimonial Slider gestures
+  const testTouchStartX = useRef(0)
+  const testTouchEndX = useRef(0)
+  const testMouseStartX = useRef(0)
+  const testIsDragging = useRef(false)
+
+  const handleTestTouchStart = (e) => {
+    testTouchStartX.current = e.touches[0].clientX
+  }
+  const handleTestTouchMove = (e) => {
+    testTouchEndX.current = e.touches[0].clientX
+  }
+  const handleTestTouchEnd = () => {
+    if (!testTouchStartX.current || !testTouchEndX.current) return
+    const distance = testTouchStartX.current - testTouchEndX.current
+    if (distance > minSwipeDistance) {
+      setTestimonial((testimonial + 1) % TESTIMONIALS.length)
+    } else if (distance < -minSwipeDistance) {
+      setTestimonial((testimonial - 1 + TESTIMONIALS.length) % TESTIMONIALS.length)
+    }
+    testTouchStartX.current = 0
+    testTouchEndX.current = 0
+  }
+
+  const handleTestMouseDown = (e) => {
+    if (e.button !== 0) return
+    testMouseStartX.current = e.clientX
+    testIsDragging.current = true
+  }
+  const handleTestMouseMove = (e) => {
+    if (!testIsDragging.current) return
+    e.preventDefault()
+  }
+  const handleTestMouseUp = (e) => {
+    if (!testIsDragging.current) return
+    const distance = testMouseStartX.current - e.clientX
+    if (distance > minSwipeDistance) {
+      setTestimonial((testimonial + 1) % TESTIMONIALS.length)
+    } else if (distance < -minSwipeDistance) {
+      setTestimonial((testimonial - 1 + TESTIMONIALS.length) % TESTIMONIALS.length)
+    }
+    testIsDragging.current = false
+    testMouseStartX.current = 0
+  }
+  const handleTestMouseLeave = () => {
+    testIsDragging.current = false
+  }
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -101,7 +199,16 @@ export default function Home() {
   return (
     <div className="home">
       {/* Hero Slider */}
-      <section className="hero-slider">
+      <section
+        className="hero-slider"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
+      >
         {SLIDES.map((s, i) => (
           <div key={i} className={`slide${slide === i ? ' active' : ''}`}>
             <div className={`slide-bg ${s.bg}`} />
@@ -289,7 +396,16 @@ export default function Home() {
             <h2>What Customers Say</h2>
             <p>Real reviews from real customers</p>
           </div>
-          <div className="testimonials-slider">
+          <div
+            className="testimonials-slider"
+            onTouchStart={handleTestTouchStart}
+            onTouchMove={handleTestTouchMove}
+            onTouchEnd={handleTestTouchEnd}
+            onMouseDown={handleTestMouseDown}
+            onMouseMove={handleTestMouseMove}
+            onMouseUp={handleTestMouseUp}
+            onMouseLeave={handleTestMouseLeave}
+          >
             {TESTIMONIALS.map((t, i) => (
               <div key={i} className={`testimonial-card${testimonial === i ? ' active' : ''}`}>
                 <div className="stars">★★★★★</div>
