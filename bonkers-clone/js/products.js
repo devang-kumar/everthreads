@@ -19,7 +19,11 @@ const products = [
   { id:17, name:"Washed Denim Jacket",          category:"unisex", price:1899, originalPrice:2299, img:"https://images.unsplash.com/photo-1551537482-f2075a1d41f2?w=400&h=533&fit=crop&crop=top",      badge:"new",  colors:["#4a6fa5","#1a1a1a","#8b7355"], tag:"new",      collection:"drift",    sizes:["S","M","L","XL"],            rating:4.7, reviews:38  },
   { id:18, name:"Floral Print Midi Dress",      category:"women",  price:1299, originalPrice:1599, img:"https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=400&h=533&fit=crop&crop=top",   badge:"sale", colors:["#ffd6a5","#a8dadc","#e63946"], tag:"trending", collection:"summer",   sizes:["XS","S","M","L"],            rating:4.5, reviews:91  },
   { id:19, name:"Streetwear Cargo Pants",       category:"men",    price:1499, originalPrice:1799, img:"https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=400&h=533&fit=crop&crop=top",   badge:"sale", colors:["#1a1a1a","#4a4a2a","#8b7355"], tag:"trending", collection:"drift",    sizes:["S","M","L","XL","XXL"],      rating:4.4, reviews:67  },
-  { id:20, name:"Pastel Oversized Hoodie",      category:"women",  price:1199, originalPrice:1449, img:"https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400&h=533&fit=crop&crop=top",      badge:"sale", colors:["#cdb4db","#a2d2ff","#bde0fe"], tag:"new",      collection:"basics",   sizes:["XS","S","M","L","XL"],       rating:4.6, reviews:112 }
+  { id:20, name:"Pastel Oversized Hoodie",      category:"women",      price:1199, originalPrice:1449, img:"https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400&h=533&fit=crop&crop=top",      badge:"sale", colors:["#cdb4db","#a2d2ff","#bde0fe"], tag:"new",      collection:"basics",   sizes:["XS","S","M","L","XL"],       rating:4.6, reviews:112 },
+  { id:21, name:"Streetwear Cap",               category:"accessories", price:499,  originalPrice:699,  img:"https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400&h=533&fit=crop&crop=top",  badge:"new",  colors:["#1a1a1a","#ffffff","#e63946"], tag:"new",      collection:"drift",    sizes:["Free Size"],                 rating:4.3, reviews:45  },
+  { id:22, name:"Logo Tote Bag",                category:"accessories", price:699,  originalPrice:899,  img:"https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&h=533&fit=crop&crop=top",      badge:"new",  colors:["#1a1a1a","#f5f0e8"],          tag:"new",      collection:"basics",   sizes:["Free Size"],                 rating:4.5, reviews:32  },
+  { id:23, name:"Athletic Crew Socks (3 Pack)", category:"accessories", price:299,  originalPrice:399,  img:"https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?w=400&h=533&fit=crop&crop=top",  badge:"sale", colors:["#ffffff","#1a1a1a","#e63946"], tag:"trending", collection:"basics",   sizes:["Free Size"],                 rating:4.4, reviews:88  },
+  { id:24, name:"Embroidered Bucket Hat",       category:"accessories", price:599,  originalPrice:799,  img:"https://images.unsplash.com/photo-1521369909029-2afed882baee?w=400&h=533&fit=crop&crop=top",  badge:"new",  colors:["#4a6fa5","#1a1a1a","#2d6a4f"], tag:"new",     collection:"summer",   sizes:["Free Size"],                 rating:4.2, reviews:27  }
 ];
 
 // â”€â”€ Normalise API product â†’ local shape â”€â”€
@@ -156,7 +160,7 @@ async function populateGrid(gridId, filter, limit) {
     }
 
     const qs  = new URLSearchParams(params).toString();
-    const res = await fetch(`' + BC_API + '/products?${qs}`);
+    const res = await fetch(`${BC_API}/products?${qs}`);
     if (res.ok) {
       const data = await res.json();
       if (data.success && data.products?.length) {

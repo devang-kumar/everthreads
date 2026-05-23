@@ -1,17 +1,19 @@
 services:
   - type: web
-    name: bonkerscorner
+    name: everthreads
     env: node
-    region: singapore   # closest to India
+    region: singapore
     plan: free
-    rootDir: server
-    buildCommand: npm install
-    startCommand: node index.js
+    rootDir: .
+    buildCommand: cd client && npm install && npm run build && cd ../server && npm install
+    startCommand: node server/index.js
     envVars:
       - key: NODE_ENV
         value: production
+      - key: AUTO_SEED
+        value: true
       - key: MONGO_URI
-        sync: false       # set manually in Render dashboard
+        sync: false
       - key: JWT_SECRET
         sync: false
       - key: JWT_EXPIRE
@@ -19,6 +21,8 @@ services:
       - key: RAZORPAY_KEY_ID
         sync: false
       - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
         sync: false
       - key: ADMIN_EMAIL
         value: admin@bonkerscorner.com

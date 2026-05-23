@@ -1,6 +1,11 @@
-// ===== CHECKOUT ENGINE =====
+﻿// ===== CHECKOUT ENGINE =====
 const COUPONS_CO = {
-  'SHARK10':  { pct: 10 },
+  'WELCOME15': { pct: 15 },
+  'FIRST15':   { pct: 15 },
+  'SUMMER20':  { pct: 20 },
+  'WELCOME5':  { pct: 5  },
+  'FLAT10':    { pct: 10 }
+};,
   'FIRST15':  { pct: 15 },
   'SUMMER20': { pct: 20 },
   'WELCOME5': { pct: 5  }
@@ -34,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Simulated PIN → city lookup
+// Simulated PIN â†’ city lookup
 const pinCities = {
   '400001':'Mumbai','110001':'New Delhi','560001':'Bengaluru',
   '600001':'Chennai','700001':'Kolkata','500001':'Hyderabad',
@@ -66,9 +71,9 @@ function renderSummary() {
       <div class="summary-item-img"><img src="${item.img}" alt="${item.name}" /></div>
       <div class="summary-item-info">
         <h4>${item.name}</h4>
-        <p>Size: ${item.size} &nbsp;·&nbsp; Qty: ${item.qty}</p>
+        <p>Size: ${item.size} &nbsp;Â·&nbsp; Qty: ${item.qty}</p>
       </div>
-      <span class="summary-item-price">₹${(item.price*item.qty).toLocaleString('en-IN')}</span>
+      <span class="summary-item-price">â‚¹${(item.price*item.qty).toLocaleString('en-IN')}</span>
     </div>`).join('');
 
   updateTotals();
@@ -85,17 +90,17 @@ function updateTotals() {
   const total    = subtotal - discount - prepaidDisc + shipping + codFee;
 
   totals.innerHTML = `
-    <div class="total-row"><span>Subtotal</span><span>₹${subtotal.toLocaleString('en-IN')}</span></div>
-    ${discount ? `<div class="total-row discount"><span>Coupon (${checkoutCoupon.code})</span><span>−₹${discount.toLocaleString('en-IN')}</span></div>` : ''}
-    ${prepaidDisc ? `<div class="total-row discount"><span>Prepaid Discount (5%)</span><span>−₹${prepaidDisc.toLocaleString('en-IN')}</span></div>` : ''}
-    <div class="total-row"><span>Shipping</span><span>${shipping===0?'<span class="free-tag">FREE</span>':'₹'+shipping}</span></div>
-    ${codFee ? `<div class="total-row"><span>COD Fee</span><span>₹${codFee}</span></div>` : ''}
-    <div class="total-row grand"><span>Total</span><span>₹${total.toLocaleString('en-IN')}</span></div>
-    <p class="savings-note">You save ₹${(discount+prepaidDisc+(subtotal>=999?99:0)).toLocaleString('en-IN')} on this order!</p>`;
+    <div class="total-row"><span>Subtotal</span><span>â‚¹${subtotal.toLocaleString('en-IN')}</span></div>
+    ${discount ? `<div class="total-row discount"><span>Coupon (${checkoutCoupon.code})</span><span>âˆ’â‚¹${discount.toLocaleString('en-IN')}</span></div>` : ''}
+    ${prepaidDisc ? `<div class="total-row discount"><span>Prepaid Discount (5%)</span><span>âˆ’â‚¹${prepaidDisc.toLocaleString('en-IN')}</span></div>` : ''}
+    <div class="total-row"><span>Shipping</span><span>${shipping===0?'<span class="free-tag">FREE</span>':'â‚¹'+shipping}</span></div>
+    ${codFee ? `<div class="total-row"><span>COD Fee</span><span>â‚¹${codFee}</span></div>` : ''}
+    <div class="total-row grand"><span>Total</span><span>â‚¹${total.toLocaleString('en-IN')}</span></div>
+    <p class="savings-note">You save â‚¹${(discount+prepaidDisc+(subtotal>=999?99:0)).toLocaleString('en-IN')} on this order!</p>`;
 
   // Update button
   document.getElementById('placeOrderBtn').innerHTML =
-    `<i class="fa fa-lock"></i> PLACE ORDER — ₹${total.toLocaleString('en-IN')}`;
+    `<i class="fa fa-lock"></i> PLACE ORDER â€” â‚¹${total.toLocaleString('en-IN')}`;
 
   return total;
 }
@@ -110,10 +115,10 @@ function applyCheckoutCoupon() {
   const msg  = document.getElementById('couponMsg');
   if (COUPONS_CO[code]) {
     checkoutCoupon = { code, ...COUPONS_CO[code] };
-    msg.innerHTML  = `<i class="fa fa-check-circle" style="color:#2d6a4f"></i> ${code} applied — ${COUPONS_CO[code].pct}% off!`;
+    msg.innerHTML  = `<i class="fa fa-check-circle" style="color:#2d6a4f"></i> ${code} applied â€” ${COUPONS_CO[code].pct}% off!`;
     msg.className  = 'coupon-msg success';
     updateTotals();
-    showToast(`Coupon ${code} applied! 🎉`);
+    showToast(`Coupon ${code} applied! ðŸŽ‰`);
   } else {
     msg.innerHTML  = `<i class="fa fa-times-circle" style="color:#e63946"></i> Invalid coupon code`;
     msg.className  = 'coupon-msg error';
@@ -125,7 +130,7 @@ function useCoupon(code) {
   applyCheckoutCoupon();
 }
 
-// ── Validation ──
+// â”€â”€ Validation â”€â”€
 function validate() {
   let ok = true;
   const rules = [
@@ -156,7 +161,7 @@ function validate() {
   return ok;
 }
 
-// ── Save address ──
+// â”€â”€ Save address â”€â”€
 function saveAddress() {
   const addr = {};
   ['email','phone','firstName','lastName','addr1','addr2','city','pin'].forEach(id => {
@@ -169,7 +174,7 @@ function saveAddress() {
   return addr;
 }
 
-// ── Place Order ──
+// â”€â”€ Place Order â”€â”€
 function placeOrder() {
   if (!cart.length) { showToast('Your cart is empty!'); return; }
   if (!validate()) return;
@@ -191,7 +196,7 @@ function placeOrder() {
   }
 }
 
-// ── Razorpay Integration ──
+// â”€â”€ Razorpay Integration â”€â”€
 function initiateRazorpay(amount, addr) {
   const btn = document.getElementById('placeOrderBtn');
   btn.disabled = true;
@@ -203,7 +208,7 @@ function initiateRazorpay(amount, addr) {
     key: 'rzp_test_YourKeyHere', // Replace with your Razorpay Test Key
     amount: amount * 100,         // Amount in paise
     currency: 'INR',
-    name: 'BonkersCorner',
+    name: 'EVERTHREAD',
     description: `Order of ${cart.length} item(s)`,
     image: 'https://via.placeholder.com/80x80?text=BC',
     // order_id: 'order_xxxx',    // Get from backend in production
@@ -223,7 +228,7 @@ function initiateRazorpay(amount, addr) {
     modal: {
       ondismiss: function() {
         btn.disabled = false;
-        btn.innerHTML = `<i class="fa fa-lock"></i> PLACE ORDER — ₹${amount.toLocaleString('en-IN')}`;
+        btn.innerHTML = `<i class="fa fa-lock"></i> PLACE ORDER â€” â‚¹${amount.toLocaleString('en-IN')}`;
         showToast('Payment cancelled. Try again.');
       }
     }
@@ -234,17 +239,17 @@ function initiateRazorpay(amount, addr) {
     rzp.on('payment.failed', function(resp) {
       showToast('Payment failed: ' + resp.error.description, 'error');
       btn.disabled = false;
-      btn.innerHTML = `<i class="fa fa-lock"></i> PLACE ORDER — ₹${amount.toLocaleString('en-IN')}`;
+      btn.innerHTML = `<i class="fa fa-lock"></i> PLACE ORDER â€” â‚¹${amount.toLocaleString('en-IN')}`;
     });
     rzp.open();
   } catch(e) {
-    // Razorpay not loaded or key invalid — show demo success
+    // Razorpay not loaded or key invalid â€” show demo success
     console.warn('Razorpay demo mode:', e.message);
     confirmOrder('DEMO', 'BC' + Date.now(), amount);
   }
 }
 
-// ── Confirm Order ──
+// â”€â”€ Confirm Order â”€â”€
 async function confirmOrder(method, paymentId, amount) {
   const addr = {
     name:  `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`,
@@ -280,7 +285,10 @@ async function confirmOrder(method, paymentId, amount) {
 
   cart = []; saveCart();
   document.getElementById('successMsg').textContent =
-    `Payment ${method === 'COD' ? 'on delivery' : 'successful'}! ₹${amount.toLocaleString('en-IN')} ${method === 'COD' ? 'to be paid on delivery' : 'paid'}.`;
+    `Payment ${method === 'COD' ? 'on delivery' : 'successful'}! â‚¹${amount.toLocaleString('en-IN')} ${method === 'COD' ? 'to be paid on delivery' : 'paid'}.`;
   document.getElementById('orderIdDisplay').textContent = `Order ID: ${orderId}`;
   document.getElementById('successModal').classList.add('open');
 }
+
+
+

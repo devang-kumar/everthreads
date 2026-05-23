@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Try API first
   let product = null;
   try {
-    const res = await fetch(`' + BC_API + '/products/${id}`);
+    const res = await fetch(`${BC_API}/products/${id}`);
     if (res.ok) {
       const data = await res.json();
       if (data.success && data.product) {
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function loadProduct(product) {
-  document.title = `${product.name} | BonkersCorner`;
+  document.title = `${product.name} | EVERTHREAD`;
 
   // Breadcrumb
   const bc = document.getElementById('breadcrumbName');
@@ -217,5 +217,6 @@ function renderReviews(product) {
     </div>
     <button class="btn-outline-dark" onclick="showToast('Login to write a review')">Write a Review</button>`;
 }
+
 
 

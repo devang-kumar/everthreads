@@ -20,7 +20,27 @@ exports.getProducts = async (req, res) => {
     if (category)  query.category   = category;
     if (collection)query.collection = collection;
     if (tag)       query.tag        = tag;
-    if (search)    query.name       = { $regex: search, $options: 'i' };
+
+    // Smart search — split into words, skip stop words, match any word across multiple fields
+    if (search) {
+      const STOP_WORDS = new Set(['for','the','a','an','and','or','in','of','to','with','by','on','at','is','are','was','were','be','been','being','have','has','had','do','does','did','will','would','could','should','may','might','shall','can','need','dare','ought','used','men','women','unisex']);
+      // Simple stemmer — strip common suffixes to get root
+      const stem = w => w.replace(/ies$/i,'y').replace(/ves$/i,'f').replace(/ses$|xes$|zes$|ches$|shes$/i,'').replace(/s$/i,'');
+      const words = search.trim().split(/\s+/).filter(w => w.length > 1 && !STOP_WORDS.has(w.toLowerCase()));
+      if (words.length === 0) {
+        query.name = { $regex: search.trim(), $options: 'i' };
+      } else {
+        // For each meaningful word, also try its stemmed form
+        const patterns = [...new Set(words.flatMap(w => [w, stem(w)].filter(Boolean)))];
+        query.$or = patterns.flatMap(word => [
+          { name:        { $regex: word, $options: 'i' } },
+          { description: { $regex: word, $options: 'i' } },
+          { tag:         { $regex: word, $options: 'i' } },
+          { collection:  { $regex: word, $options: 'i' } },
+          { category:    { $regex: word, $options: 'i' } },
+        ]);
+      }
+    }
     if (minPrice || maxPrice) {
       query.price = {};
       if (minPrice) query.price.$gte = +minPrice;

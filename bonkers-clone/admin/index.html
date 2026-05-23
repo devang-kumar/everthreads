@@ -1,18 +1,18 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Panel | BonkersCorner</title>
+  <title>Admin Panel | EVERTHREAD</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="admin.css" />
 </head>
 <body class="loading-state">
 
-<!-- Auth Gate — shown while checking login -->
+<!-- Auth Gate â€” shown while checking login -->
 <div id="authGate" style="display:none;position:fixed;inset:0;background:#fff;z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:16px;">
-  <div style="font-size:40px">🔒</div>
+  <div style="font-size:40px">ðŸ”’</div>
   <h2 style="font-family:'Montserrat',sans-serif;font-size:20px">Admin Access Required</h2>
   <p style="color:#64748b;font-size:14px">You must be an admin to view this page.</p>
   <a href="../pages/login.html" style="padding:12px 28px;background:#1a1a1a;color:#fff;font-weight:700;font-size:13px;letter-spacing:1px;text-decoration:none;">LOGIN AS ADMIN</a>
@@ -23,7 +23,7 @@
   <div class="sidebar-brand">
     <span class="brand-logo">BC</span>
     <div>
-      <div class="brand-name">BonkersCorner</div>
+      <div class="brand-name">EVERTHREAD</div>
       <div class="brand-sub">Admin Panel</div>
     </div>
   </div>
@@ -50,7 +50,7 @@
     <div class="topbar-title" id="topbarTitle">Dashboard</div>
     <div class="topbar-right">
       <div class="admin-badge"><i class="fa fa-shield-alt"></i> Admin</div>
-      <div class="admin-name" id="adminName">—</div>
+      <div class="admin-name" id="adminName">â€”</div>
     </div>
   </header>
 
@@ -64,11 +64,11 @@
       </div>
       <div class="stats-grid" id="statsGrid"><div class="stat-card loading" style="grid-column:1/-1;min-height:80px"></div></div>
       <div class="dashboard-grid">
-        <div class="card"><div class="card-header"><h3>Revenue — Last 7 Days</h3></div><div class="chart-wrap" id="revenueChart"><p class="empty-msg">Loading...</p></div></div>
+        <div class="card"><div class="card-header"><h3>Revenue â€” Last 7 Days</h3></div><div class="chart-wrap" id="revenueChart"><p class="empty-msg">Loading...</p></div></div>
         <div class="card"><div class="card-header"><h3>Orders by Status</h3></div><div id="statusChart"><p class="empty-msg">Loading...</p></div></div>
       </div>
       <div class="dashboard-grid">
-        <div class="card"><div class="card-header"><h3>Recent Orders</h3><a href="#" onclick="switchSection('orders')" class="card-link">View All →</a></div><div id="recentOrdersTable"></div></div>
+        <div class="card"><div class="card-header"><h3>Recent Orders</h3><a href="#" onclick="switchSection('orders')" class="card-link">View All â†’</a></div><div id="recentOrdersTable"></div></div>
         <div class="card"><div class="card-header"><h3><i class="fa fa-exclamation-triangle" style="color:#f59e0b"></i> Low Stock Alert</h3></div><div id="lowStockList"></div></div>
       </div>
     </section>
@@ -148,7 +148,7 @@
         </select>
         <select class="filter-select" id="invStockFilter" onchange="filterInventory()">
           <option value="">All Stock</option>
-          <option value="low">Low Stock (≤5)</option><option value="out">Out of Stock</option>
+          <option value="low">Low Stock (â‰¤5)</option><option value="out">Out of Stock</option>
         </select>
       </div>
       <div class="table-wrap">
@@ -237,12 +237,12 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Selling Price (₹) *</label>
+          <label>Selling Price (â‚¹) *</label>
           <input type="number" id="pPrice" placeholder="799" min="0" />
           <span class="form-err" id="pPriceErr"></span>
         </div>
         <div class="form-group">
-          <label>Original / MRP (₹) *</label>
+          <label>Original / MRP (â‚¹) *</label>
           <input type="number" id="pOriginalPrice" placeholder="999" min="0" />
           <span class="form-err" id="pOrigErr"></span>
         </div>
@@ -250,7 +250,7 @@
           <label>Badge</label>
           <select id="pBadge">
             <option value="">None</option><option value="sale">SALE</option>
-            <option value="new">NEW</option><option value="hot">HOT 🔥</option>
+            <option value="new">NEW</option><option value="hot">HOT ðŸ”¥</option>
           </select>
         </div>
         <div class="form-group">
@@ -362,7 +362,7 @@
 <div id="toast" class="toast"></div>
 
 <script>
-// Inline API base — no dependency on api.js
+// Inline API base â€” no dependency on api.js
 const BC_API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? 'http://localhost:5000/api' : '/api';
 const ADMIN_API = BC_API;
@@ -384,3 +384,4 @@ async function adminFetch(path, opts={}) {
 <script src="admin.js"></script>
 </body>
 </html>
+

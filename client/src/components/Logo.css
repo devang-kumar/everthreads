@@ -1,0 +1,25 @@
+.et-logo-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.et-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.et-logo-image {
+  width: auto;
+  max-width: unset;
+  object-fit: contain;
+  transform: scale(2.8);
+  transform-origin: center;
+}
+
+/* Sizes */
+.et-logo--sm .et-logo-image { height: 40px; }
+.et-logo--md .et-logo-image { height: 64px; }
+.et-logo--lg .et-logo-image { height: 96px; }
+.et-logo--xl .et-logo-image { height: 120px; }

@@ -56,7 +56,7 @@ productSchema.methods.updateRating = function() {
 
 // Get total stock
 productSchema.virtual('totalStock').get(function() {
-  return this.variants.reduce((s, v) => s + v.stock, 0);
+  return (this.variants || []).reduce((s, v) => s + v.stock, 0);
 });
 
 productSchema.set('toJSON', { virtuals: true });

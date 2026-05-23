@@ -1,11 +1,11 @@
-// ===== CART ENGINE =====
+﻿// ===== CART ENGINE =====
 let cart = JSON.parse(localStorage.getItem('bc_cart') || '[]');
 
 function saveCart() {
   localStorage.setItem('bc_cart', JSON.stringify(cart));
 }
 
-// ── Add to cart ──
+// â”€â”€ Add to cart â”€â”€
 function addToCart(productId, size, qty) {
   size = size || 'M';
   qty  = qty  || 1;
@@ -26,17 +26,17 @@ function addToCart(productId, size, qty) {
   saveCart();
   updateCartUI();
   openCart();
-  showToast(`"${product.name}" added to bag 🛍️`);
+  showToast(`"${product.name}" added to bag ðŸ›ï¸`);
 }
 
-// ── Remove ──
+// â”€â”€ Remove â”€â”€
 function removeFromCart(key) {
   cart = cart.filter(i => i.key !== key);
   saveCart();
   updateCartUI();
 }
 
-// ── Change qty ──
+// â”€â”€ Change qty â”€â”€
 function changeQty(key, delta) {
   const item = cart.find(i => i.key === key);
   if (!item) return;
@@ -45,7 +45,7 @@ function changeQty(key, delta) {
   else { saveCart(); updateCartUI(); }
 }
 
-// ── Cart totals ──
+// â”€â”€ Cart totals â”€â”€
 function getCartSubtotal() {
   return cart.reduce((s, i) => s + i.price * i.qty, 0);
 }
@@ -53,7 +53,7 @@ function getCartCount() {
   return cart.reduce((s, i) => s + i.qty, 0);
 }
 
-// ── Render cart UI ──
+// â”€â”€ Render cart UI â”€â”€
 function updateCartUI() {
   const count    = getCartCount();
   const subtotal = getCartSubtotal();
@@ -63,7 +63,7 @@ function updateCartUI() {
   const itemCountEl = document.getElementById('cartItemCount');
   if (itemCountEl) itemCountEl.textContent = `(${count})`;
   const totalEl = document.getElementById('cartTotal');
-  if (totalEl) totalEl.textContent = `₹${subtotal.toLocaleString('en-IN')}`;
+  if (totalEl) totalEl.textContent = `â‚¹${subtotal.toLocaleString('en-IN')}`;
 
   const body   = document.getElementById('cartBody');
   const footer = document.getElementById('cartFooter');
@@ -88,11 +88,11 @@ function updateCartUI() {
           <p>Size: <strong>${item.size}</strong></p>
           <div class="cart-item-actions">
             <div class="qty-control">
-              <button class="qty-btn" onclick="changeQty('${item.key}',-1)">−</button>
+              <button class="qty-btn" onclick="changeQty('${item.key}',-1)">âˆ’</button>
               <span class="qty-num">${item.qty}</span>
               <button class="qty-btn" onclick="changeQty('${item.key}',1)">+</button>
             </div>
-            <span class="cart-item-price">₹${(item.price * item.qty).toLocaleString('en-IN')}</span>
+            <span class="cart-item-price">â‚¹${(item.price * item.qty).toLocaleString('en-IN')}</span>
           </div>
           <button class="cart-item-remove" onclick="removeFromCart('${item.key}')">
             <i class="fa fa-trash-alt"></i> Remove
@@ -111,11 +111,11 @@ function updateCartUI() {
           <input type="text" id="cartCouponInput" placeholder="Coupon code" value="${appliedCoupon?appliedCoupon.code:''}" />
           <button onclick="applyCouponFromCart()">APPLY</button>
         </div>
-        ${appliedCoupon ? `<div class="coupon-applied"><i class="fa fa-check-circle"></i> ${appliedCoupon.code} applied — ${appliedCoupon.pct}% off</div>` : ''}
-        <div class="cart-summary-row"><span>Subtotal</span><span>₹${subtotal.toLocaleString('en-IN')}</span></div>
-        ${discount ? `<div class="cart-summary-row discount"><span>Discount</span><span>−₹${discount.toLocaleString('en-IN')}</span></div>` : ''}
-        <div class="cart-summary-row"><span>Shipping</span><span>${shipping === 0 ? '<span class="free-ship">FREE</span>' : '₹'+shipping}</span></div>
-        <div class="cart-summary-row total"><span>Total</span><span>₹${total.toLocaleString('en-IN')}</span></div>
+        ${appliedCoupon ? `<div class="coupon-applied"><i class="fa fa-check-circle"></i> ${appliedCoupon.code} applied â€” ${appliedCoupon.pct}% off</div>` : ''}
+        <div class="cart-summary-row"><span>Subtotal</span><span>â‚¹${subtotal.toLocaleString('en-IN')}</span></div>
+        ${discount ? `<div class="cart-summary-row discount"><span>Discount</span><span>âˆ’â‚¹${discount.toLocaleString('en-IN')}</span></div>` : ''}
+        <div class="cart-summary-row"><span>Shipping</span><span>${shipping === 0 ? '<span class="free-ship">FREE</span>' : 'â‚¹'+shipping}</span></div>
+        <div class="cart-summary-row total"><span>Total</span><span>â‚¹${total.toLocaleString('en-IN')}</span></div>
         <a href="${getBasePath()}checkout.html" class="btn-primary full-width" onclick="closeCart()">
           PROCEED TO CHECKOUT
         </a>
@@ -124,9 +124,9 @@ function updateCartUI() {
   }
 }
 
-// ── Coupon system ──
+// â”€â”€ Coupon system â”€â”€
 const COUPONS = {
-  'SHARK10':  { pct: 10, desc: '10% off' },
+  'WELCOME15': { pct: 15, desc: '15% off your first order' },
   'FIRST15':  { pct: 15, desc: '15% off for first order' },
   'SUMMER20': { pct: 20, desc: '20% summer sale' },
   'WELCOME5': { pct: 5,  desc: '5% welcome discount' }
@@ -139,13 +139,13 @@ function applyCouponFromCart() {
     appliedCoupon = { code, ...COUPONS[code] };
     saveCart();
     updateCartUI();
-    showToast(`Coupon ${code} applied! ${COUPONS[code].desc} 🎉`);
+    showToast(`Coupon ${code} applied! ${COUPONS[code].desc} ðŸŽ‰`);
   } else {
     showToast('Invalid coupon code');
   }
 }
 
-// ── Open / Close ──
+// â”€â”€ Open / Close â”€â”€
 function openCart() {
   document.getElementById('cartSidebar')?.classList.add('open');
   document.getElementById('cartOverlay')?.classList.add('open');
@@ -157,14 +157,14 @@ function closeCart() {
   document.body.style.overflow = '';
 }
 
-// ── Wishlist ──
+// â”€â”€ Wishlist â”€â”€
 function toggleWishlist(btn, productId) {
   const wl = JSON.parse(localStorage.getItem('bc_wishlist') || '[]');
   const idx = wl.indexOf(productId);
   if (idx === -1) {
     wl.push(productId);
     btn.classList.add('active');
-    showToast('Added to wishlist ❤️');
+    showToast('Added to wishlist â¤ï¸');
   } else {
     wl.splice(idx, 1);
     btn.classList.remove('active');
@@ -173,7 +173,7 @@ function toggleWishlist(btn, productId) {
   localStorage.setItem('bc_wishlist', JSON.stringify(wl));
 }
 
-// ── Toast ──
+// â”€â”€ Toast â”€â”€
 function showToast(msg, type) {
   let toast = document.getElementById('toast');
   if (!toast) {
@@ -187,10 +187,12 @@ function showToast(msg, type) {
   toast._timer = setTimeout(() => toast.classList.remove('show'), 3200);
 }
 
-// ── Init ──
+// â”€â”€ Init â”€â”€
 document.addEventListener('DOMContentLoaded', () => {
   updateCartUI();
   document.getElementById('cartToggle')?.addEventListener('click', openCart);
   document.getElementById('cartClose')?.addEventListener('click', closeCart);
   document.getElementById('cartOverlay')?.addEventListener('click', closeCart);
 });
+
+

@@ -1,0 +1,13 @@
+{
+  "name": "everthreads",
+  "version": "1.0.0",
+  "description": "Everthreads — Story-driven clothing for creators",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "scripts": {
+    "build": "cd client && npm install --include=dev && npm run build && cd ../server && npm install --omit=dev",
+    "start": "node server/index.js"
+  }
+}

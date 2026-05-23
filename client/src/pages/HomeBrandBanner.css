@@ -1,0 +1,55 @@
+/* Home Brand Banner — above testimonials */
+.home-brand-banner {
+  position: relative;
+  min-height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-align: center;
+}
+.home-brand-banner-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #0d0d0d 0%, #1a0a2e 40%, #0d0d0d 100%);
+}
+.home-brand-banner-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(230,57,70,0.18) 0%, transparent 65%),
+    radial-gradient(ellipse at 20% 80%, rgba(45,27,105,0.20) 0%, transparent 50%);
+}
+.home-brand-banner-content {
+  position: relative;
+  z-index: 2;
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.home-brand-logo-wrap {
+  margin-bottom: 8px;
+}
+.home-brand-motto {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 4vw, 44px);
+  color: var(--white);
+  letter-spacing: 3px;
+  opacity: 0.9;
+}
+.home-brand-sub {
+  font-size: 15px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.8;
+  max-width: 520px;
+}
+.home-brand-btns {
+  display: flex;
+  gap: 14px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}

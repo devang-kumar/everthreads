@@ -1,0 +1,29 @@
+@import url('https://fonts.cdnfonts.com/css/kollektif');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;600;700;900&display=swap');
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --black: #1a1a1a;
+  --white: #ffffff;
+  --accent: #e63946;
+  --gray: #767676;
+  --light-gray: #f7f7f7;
+  --border-color: #e8e8e8;
+  --font-main: 'Kollektif', sans-serif;
+  --font-display: 'Kollektif', sans-serif;
+  --font-heading: 'Kollektif', sans-serif;
+  --header-h: 64px;
+  --announce-h: 34px;
+  --transition: 0.25s ease;
+  --shadow: 0 2px 16px rgba(0,0,0,0.10);
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-main); background: var(--white); color: var(--black); overflow-x: hidden; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+img { max-width: 100%; display: block; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, textarea, select { font-family: inherit; }
+.container { max-width: 1320px; margin: 0 auto; padding: 0 20px; }

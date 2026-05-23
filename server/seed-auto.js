@@ -1,4 +1,4 @@
-// Auto-seed — runs on startup if DB is empty (no process.exit)
+﻿// Auto-seed â€” runs on startup if DB is empty (no process.exit)
 const User         = require('./models/User');
 const Product      = require('./models/Product');
 const Order        = require('./models/Order');
@@ -23,7 +23,11 @@ const productData = [
   { productId:17, name:"Washed Denim Jacket",        category:"unisex", price:1899, originalPrice:2299, badge:"new",  tag:"new",      collection:"drift",    sizes:["S","M","L","XL"],            colors:["#4a6fa5","#1a1a1a","#8b7355"], images:["https://images.unsplash.com/photo-1551537482-f2075a1d41f2?w=400&h=533&fit=crop&crop=top"], rating:4.7, numReviews:38  },
   { productId:18, name:"Floral Print Midi Dress",    category:"women",  price:1299, originalPrice:1599, badge:"sale", tag:"trending", collection:"summer",   sizes:["XS","S","M","L"],            colors:["#ffd6a5","#a8dadc","#e63946"], images:["https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=400&h=533&fit=crop&crop=top"], rating:4.5, numReviews:91  },
   { productId:19, name:"Streetwear Cargo Pants",     category:"men",    price:1499, originalPrice:1799, badge:"sale", tag:"trending", collection:"drift",    sizes:["S","M","L","XL","XXL"],      colors:["#1a1a1a","#4a4a2a","#8b7355"], images:["https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=400&h=533&fit=crop&crop=top"], rating:4.4, numReviews:67  },
-  { productId:20, name:"Pastel Oversized Hoodie",    category:"women",  price:1199, originalPrice:1449, badge:"sale", tag:"new",      collection:"basics",   sizes:["XS","S","M","L","XL"],       colors:["#cdb4db","#a2d2ff","#bde0fe"], images:["https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400&h=533&fit=crop&crop=top"], rating:4.6, numReviews:112 }
+  { productId:20, name:"Pastel Oversized Hoodie",      category:"women",      price:1199, originalPrice:1449, badge:"sale", tag:"new",      collection:"basics",   sizes:["XS","S","M","L","XL"],       colors:["#cdb4db","#a2d2ff","#bde0fe"], images:["https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400&h=533&fit=crop&crop=top"], rating:4.6, numReviews:112 },
+  { productId:21, name:"Streetwear Cap",               category:"accessories", price:499,  originalPrice:699,  badge:"new",  tag:"new",      collection:"drift",    sizes:["Free Size"],                 colors:["#1a1a1a","#ffffff","#e63946"], images:["https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400&h=533&fit=crop&crop=top"], rating:4.3, numReviews:45  },
+  { productId:22, name:"Logo Tote Bag",                category:"accessories", price:699,  originalPrice:899,  badge:"new",  tag:"new",      collection:"basics",   sizes:["Free Size"],                 colors:["#1a1a1a","#f5f0e8"],           images:["https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&h=533&fit=crop&crop=top"], rating:4.5, numReviews:32  },
+  { productId:23, name:"Athletic Crew Socks 3-Pack",   category:"accessories", price:299,  originalPrice:399,  badge:"sale", tag:"trending", collection:"basics",   sizes:["Free Size"],                 colors:["#ffffff","#1a1a1a","#e63946"], images:["https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?w=400&h=533&fit=crop&crop=top"], rating:4.4, numReviews:88  },
+  { productId:24, name:"Embroidered Bucket Hat",       category:"accessories", price:599,  originalPrice:799,  badge:"new",  tag:"new",      collection:"summer",   sizes:["Free Size"],                 colors:["#4a6fa5","#1a1a1a","#2d6a4f"], images:["https://images.unsplash.com/photo-1521369909029-2afed882baee?w=400&h=533&fit=crop&crop=top"], rating:4.2, numReviews:27  }
 ];
 
 module.exports = async function autoSeed() {
@@ -32,12 +36,12 @@ module.exports = async function autoSeed() {
     const adminExists = await User.findOne({ email: process.env.ADMIN_EMAIL });
     if (!adminExists) {
       await User.create({
-        firstName: 'Admin', lastName: 'BonkersCorner',
-        email: process.env.ADMIN_EMAIL || 'admin@bonkerscorner.com',
+        firstName: 'Admin', lastName: 'EverThread',
+        email: process.env.ADMIN_EMAIL || 'admin@EverThread.com',
         password: process.env.ADMIN_PASSWORD || 'Admin@123',
         role: 'admin', phone: '+91 98765 00000'
       });
-      console.log('✅ Admin user created');
+      console.log('âœ… Admin user created');
     }
 
     // Products
@@ -52,9 +56,10 @@ module.exports = async function autoSeed() {
         description: `Premium quality ${p.name}. Made in India with the finest fabrics.`
       }))
     );
-    console.log(`✅ ${products.length} products seeded`);
-    console.log('🎉 Auto-seed complete!');
+    console.log(`âœ… ${products.length} products seeded`);
+    console.log('ðŸŽ‰ Auto-seed complete!');
   } catch (err) {
     console.error('Auto-seed error:', err.message);
   }
 };
+

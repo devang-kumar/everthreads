@@ -1,0 +1,248 @@
+/* Premium Cinematic Motto & Text-Shape Loading Splash Screen Styles */
+
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  overflow: hidden;
+  transform: translateY(0);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  transition: transform 1.0s cubic-bezier(0.85, 0, 0.15, 1),
+              box-shadow 1.0s cubic-bezier(0.85, 0, 0.15, 1);
+  will-change: transform;
+  contain: paint; /* Premium isolation: prevents any layout/paint changes in storefront from affecting splash performance */
+}
+
+/* Exit Transition: Smooth curtain rise vertically with majestic depth shadow to reveal storefront */
+.splash-screen.exit-active {
+  transform: translateY(-100%);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+
+/* Motto Styling and Layout */
+.splash-motto {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  font-family: 'Kollektif', var(--font-heading, sans-serif);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Motto Fade Out class */
+.splash-motto.fading {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.96);
+  transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+              transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.motto-line {
+  opacity: 0;
+  animation: mottoLineFadeIn 0.5s ease-out forwards;
+}
+
+.motto-line:first-child {
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  font-size: 2.2vw;
+  color: #777777;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  animation-delay: 0.2s;
+}
+
+.motto-line:last-child {
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  font-size: 4.8vw;
+  color: #000000;
+  text-transform: uppercase;
+  animation-delay: 0.7s;
+}
+
+@keyframes mottoLineFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Logo container & Centering */
+.splash-logo-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 440px; /* Increased from 360px to make the logo larger */
+  max-width: 90vw; /* Responsive limit adjusted */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Logo wrapper to hold organic drop-shadow and neon flicker */
+.splash-logo-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+  filter: drop-shadow(0 0 0px rgba(0, 0, 0, 0));
+  transition: filter 0.3s ease;
+}
+
+/* Flicker Animation applied to the wrapper */
+.splash-logo-wrapper.flickering {
+  animation: logoElectricFlicker 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* After flickering is completed, maintain a solid illuminated drop-shadow glow */
+.splash-logo-wrapper.flickered {
+  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.08)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.6));
+}
+
+/* Logo Mask Container - clips background to exact text shape of logo_v5_splash.png */
+.splash-logo-mask-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  -webkit-mask-image: url('/logo_v5_splash.png');
+  mask-image: url('/logo_v5_splash.png');
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  
+  /* Unloaded base is transparent: logo materializes directly out of empty space */
+  background-color: transparent;
+  
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1),
+              transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+  
+  will-change: transform, opacity;
+}
+
+/* Stage 1: Logo Enter (fade in and settle) */
+.splash-logo-mask-container.entered,
+.splash-logo-mask-container.loading,
+.splash-logo-mask-container.flickering,
+.splash-logo-mask-container.flickered {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Loading fill element */
+.logo-loading-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  
+  /* Solid black filling the letters, led by a glowing neon white laser head */
+  background: linear-gradient(
+    90deg,
+    #000000 0%,
+    #000000 calc(100% - 24px),
+    #222222 calc(100% - 16px), /* Rich dark charcoal */
+    #666666 calc(100% - 8px),  /* Metallic grey */
+    #ffffff calc(100% - 2px),  /* Super bright laser white scanner head */
+    rgba(255, 255, 255, 0) 100% /* Smooth fadeout */
+  );
+  
+  /* Hardware-accelerated width transition */
+  transition: width 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: width;
+}
+
+/* Trigger fill progress when loading starts */
+.splash-logo-mask-container.loading .logo-loading-fill {
+  width: 100%;
+}
+
+/* When loading is completed, remove the gradient to snap the entire logo to solid black */
+.splash-logo-mask-container.flickering .logo-loading-fill,
+.splash-logo-mask-container.flickered .logo-loading-fill {
+  background: #000000;
+  width: 100%;
+}
+
+/* Organic Sci-Fi Electric Neon Flicker Keyframe Sequence */
+@keyframes logoElectricFlicker {
+  0% {
+    opacity: 0.1;
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.05));
+  }
+  5% {
+    opacity: 0.85;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.08)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+  }
+  10% {
+    opacity: 0.15;
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.03));
+  }
+  15% {
+    opacity: 0.9;
+    filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.1)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.9));
+  }
+  25% {
+    opacity: 0.3;
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.04));
+  }
+  30% {
+    opacity: 0.95;
+    filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.12)) drop-shadow(0 0 12px rgba(255, 255, 255, 0.95));
+  }
+  45% {
+    opacity: 0.5;
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.05));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 6px 25px rgba(0, 0, 0, 0.15)) drop-shadow(0 0 15px rgba(255, 255, 255, 1));
+  }
+  65% {
+    opacity: 0.8;
+    filter: drop-shadow(0 3px 12px rgba(0, 0, 0, 0.08));
+  }
+  70% {
+    opacity: 0.95;
+    filter: drop-shadow(0 5px 20px rgba(0, 0, 0, 0.1)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.9));
+  }
+  85% {
+    opacity: 0.9;
+    filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.08));
+  }
+  100% {
+    opacity: 1;
+    filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.08)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+  }
+}
+
