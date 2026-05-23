@@ -23,6 +23,13 @@
   align-items: center;
   text-align: center;
 }
+.footer-brand-col .et-logo-link {
+  margin-top: 24px;
+  margin-bottom: 32px;
+}
+.footer-brand-col .et-logo-image {
+  transform-origin: center center;
+}
 .footer-tagline {
   font-size: 13px;
   font-style: italic;
