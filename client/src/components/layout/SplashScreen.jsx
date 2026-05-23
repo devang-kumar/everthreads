@@ -10,42 +10,42 @@ export default function SplashScreen({ onComplete }) {
     // 1. Start fading out the motto overlay
     const mottoFadeTimer = setTimeout(() => {
       setMottoState('fading');
-    }, 1300);
+    }, 800);
 
     // 2. Hide motto completely
     const mottoHideTimer = setTimeout(() => {
       setMottoState('hidden');
-    }, 1700);
+    }, 1200);
 
     // 3. Enter the EverThreads solid logo (starts empty / light grey)
     const logoEnterTimer = setTimeout(() => {
       setLogoState('entered');
-    }, 1800);
+    }, 1300);
 
-    // 4. Start filling the loading bar strictly inside the text (takes 1.8s)
+    // 4. Start filling the loading bar strictly inside the text
     const logoLoadingTimer = setTimeout(() => {
       setLogoState('loading');
-    }, 2500);
+    }, 1700);
 
-    // 5. Trigger the cinematic sci-fi neon flicker (takes 0.8s)
+    // 5. Trigger the cinematic sci-fi neon flicker
     const logoFlickerTimer = setTimeout(() => {
       setLogoState('flickering');
-    }, 4300);
+    }, 2900);
 
     // 6. Complete flicker, solidify states
     const logoFlickeredTimer = setTimeout(() => {
       setLogoState('flickered');
-    }, 5100);
+    }, 3500);
 
     // 7. White screen curtain rises
     const exitTimer = setTimeout(() => {
       setIsExiting(true);
-    }, 5100);
+    }, 3500);
 
-    // 8. Sequence completes and unmounts (takes 1.0s)
+    // 8. Sequence completes and unmounts
     const completeTimer = setTimeout(() => {
       onComplete();
-    }, 6100);
+    }, 4200);
 
     return () => {
       clearTimeout(mottoFadeTimer);

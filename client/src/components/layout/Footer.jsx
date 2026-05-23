@@ -38,7 +38,6 @@ export default function Footer() {
               <li><Link to="/shop?category=men">Men</Link></li>
               <li><Link to="/shop?category=women">Women</Link></li>
               <li><Link to="/shop?category=unisex">Unisex</Link></li>
-              <li><Link to="/shop?tag=new">New Drops</Link></li>
             </ul>
           </div>
 
