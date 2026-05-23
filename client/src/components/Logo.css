@@ -21,13 +21,13 @@
 
 @media (max-width: 900px) {
   .et-logo-image {
-    transform: scale(1.8);
+    transform: scale(2.2);
   }
 }
 
 @media (max-width: 480px) {
   .et-logo-image {
-    transform: scale(1.4);
+    transform: scale(1.7);
   }
 }
 
