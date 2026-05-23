@@ -157,6 +157,7 @@
   :root { --header-h: 56px; }
   .header-inner { grid-template-columns: auto 1fr auto; }
   .logo { font-size: 20px; padding: 0 8px; }
+  .et-logo-link { justify-self: center; grid-column: 2; }
   .header-search { display: none; }
   .hamburger { display: flex; }
   .nav {

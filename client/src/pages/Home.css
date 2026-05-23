@@ -129,7 +129,10 @@
 @media (max-width: 900px) { .collection-banners { grid-template-columns: 1fr; } .hero-slider { height: 65vh; min-height: 380px; } .slide-content { padding: 0 32px 64px; } }
 @media (max-width: 768px) { .products-grid { grid-template-columns: repeat(2, 1fr); } .newsletter-inner { flex-direction: column; } .newsletter-form { max-width: 100%; width: 100%; } .insta-grid { grid-template-columns: repeat(2, 1fr); } .features-grid { grid-template-columns: 1fr 1fr; } .feature-item { padding: 16px; border-right: none; border-bottom: 1px solid var(--border-color); } }
 @media (max-width: 480px) {
-  .slide-content { padding: 0 20px 96px; }
-  .slide-btns { flex-direction: column; }
-  .slider-dots { bottom: 16px; }
+  .slide-content { padding: 0 20px 80px; }
+  .slide-content h1 { font-size: 34px; line-height: 1.0; margin-bottom: 12px; }
+  .slide-sub { font-size: 13px; margin-bottom: 20px; }
+  .slide-btns { flex-direction: column; gap: 8px; }
+  .slide-btns .btn-primary, .slide-btns .btn-outline { padding: 10px 20px; font-size: 11px; }
+  .slider-dots { bottom: 14px; }
 }
