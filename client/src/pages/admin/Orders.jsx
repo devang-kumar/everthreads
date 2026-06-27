@@ -5,6 +5,13 @@ import toast from 'react-hot-toast'
 
 const STATUSES = ['pending','confirmed','processing','packed','shipped','out_for_delivery','delivered','cancelled','returned']
 
+const PAYMENT_BADGES = {
+  cod: { background: '#fef3c7', color: '#92400e' },
+  razorpay: { background: '#dbeafe', color: '#1e40af' },
+  demo: { background: '#ede9fe', color: '#5b21b6' },
+  coins: { background: '#ffedd5', color: '#9a3412' }
+}
+
 export default function AdminOrders() {
   const [orders, setOrders] = useState([])
   const [total, setTotal] = useState(0)
@@ -80,6 +87,7 @@ export default function AdminOrders() {
             <option value="cod">COD</option>
             <option value="razorpay">Razorpay</option>
             <option value="demo">Demo</option>
+            <option value="coins">Coins</option>
           </select>
         </div>
 
@@ -102,7 +110,7 @@ export default function AdminOrders() {
                   </td>
                   <td>{o.items?.length || 0}</td>
                   <td><strong>{fmt(o.total)}</strong></td>
-                  <td><span className="badge" style={{ background: o.paymentMethod === 'cod' ? '#fef3c7' : '#dbeafe', color: o.paymentMethod === 'cod' ? '#92400e' : '#1e40af' }}>{o.paymentMethod?.toUpperCase()}</span></td>
+                  <td><span className="badge" style={PAYMENT_BADGES[o.paymentMethod] || PAYMENT_BADGES.razorpay}>{o.paymentMethod?.toUpperCase()}</span></td>
                   <td><span className={`badge badge-${o.status}`}>{o.status?.replace(/_/g, ' ')}</span></td>
                   <td style={{ fontSize: 12 }}>{fmtDate(o.createdAt)}</td>
                   <td><button className="btn-icon" onClick={() => viewOrder(o.orderId)} title="View"><i className="fa fa-eye" /></button></td>
@@ -171,6 +179,9 @@ export default function AdminOrders() {
                 {selectedOrder.discount > 0 && <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, color: '#166534' }}><span>Discount</span><span>−{fmt(selectedOrder.discount)}</span></div>}
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}><span>Shipping</span><span>{selectedOrder.shipping === 0 ? 'FREE' : fmt(selectedOrder.shipping)}</span></div>
                 {selectedOrder.codFee > 0 && <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}><span>COD Fee</span><span>{fmt(selectedOrder.codFee)}</span></div>}
+                {selectedOrder.coinsEarned > 0 && <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, color: '#166534' }}><span>Coins earned</span><span>+{selectedOrder.coinsEarned}</span></div>}
+                {selectedOrder.coinsRedeemed > 0 && <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}><span>Coins redeemed</span><span>{selectedOrder.coinsRedeemed}</span></div>}
+                {selectedOrder.coinsRefunded > 0 && <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, color: '#166534' }}><span>Coins refunded</span><span>+{selectedOrder.coinsRefunded}</span></div>}
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 800, fontSize: 15, borderTop: '1px solid #e2e8f0', paddingTop: 8, marginTop: 4 }}><span>Total</span><span>{fmt(selectedOrder.total)}</span></div>
               </div>
 

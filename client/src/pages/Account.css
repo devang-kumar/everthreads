@@ -2,6 +2,8 @@
 .account-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; flex-wrap: wrap; gap: 16px; }
 .account-header h1 { font-family: var(--font-heading); font-size: 28px; font-weight: 700; margin-bottom: 4px; }
 .account-header p { color: var(--gray); font-size: 14px; }
+.account-header-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.coin-balance-chip { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid var(--border-color); background: #fff7ed; color: #9a3412; font-size: 12px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
 .btn-outline-dark { padding: 10px 20px; border: 1.5px solid var(--black); font-size: 12px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; transition: all var(--transition); display: flex; align-items: center; gap: 8px; cursor: pointer; background: transparent; }
 .btn-outline-dark:hover { background: var(--black); color: var(--white); }
 .account-layout { display: grid; grid-template-columns: 220px 1fr; gap: 32px; align-items: start; }
@@ -81,6 +83,30 @@
 .address-delete { font-size: 12px; color: var(--accent); display: flex; align-items: center; gap: 5px; transition: opacity var(--transition); cursor: pointer; background: none; border: none; }
 .address-delete:hover { opacity: 0.7; }
 
+/* Rewards */
+.rewards-summary { border: 1px solid var(--border-color); padding: 20px; margin-bottom: 22px; display: grid; grid-template-columns: minmax(180px, 260px) 1fr; gap: 24px; align-items: center; }
+.rewards-eyebrow { display: block; font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--gray); margin-bottom: 6px; }
+.rewards-summary strong { display: block; font-size: 42px; line-height: 1; font-weight: 800; font-family: var(--font-heading); }
+.rewards-summary p { color: var(--gray); font-size: 13px; margin-top: 8px; }
+.rewards-progress-wrap { min-width: 0; }
+.rewards-progress-meta { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; font-weight: 700; margin-bottom: 8px; color: #374151; }
+.rewards-progress { height: 10px; background: var(--light-gray); overflow: hidden; }
+.rewards-progress span { display: block; height: 100%; background: #f97316; transition: width var(--transition); }
+.reward-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.reward-card { border: 1px solid var(--border-color); background: var(--white); }
+.reward-img { aspect-ratio: 3 / 4; background: var(--light-gray); overflow: hidden; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 40px; }
+.reward-img img { width: 100%; height: 100%; object-fit: cover; }
+.reward-info { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.reward-info h3 { font-size: 14px; font-weight: 700; line-height: 1.35; min-height: 38px; }
+.reward-info p { font-size: 12px; color: var(--gray); }
+.reward-info .btn-primary { width: 100%; padding: 10px 12px; font-size: 10px; letter-spacing: 1px; }
+.reward-redeem-panel { border: 1px solid var(--black); background: var(--white); padding: 18px; margin-top: 22px; }
+.reward-redeem-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.reward-redeem-header h3 { font-size: 18px; font-weight: 800; }
+.reward-redeem-header button { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border-color); cursor: pointer; background: transparent; }
+.reward-redeem-body { display: grid; grid-template-columns: 180px 1fr; gap: 14px; }
+.reward-redeem-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 13px; color: var(--gray); flex-wrap: wrap; }
+
 /* Responsive */
 @media (max-width: 768px) {
   .account-layout { grid-template-columns: 1fr; }
@@ -88,7 +114,11 @@
   .sidebar-tab { border-bottom: none; border-right: 1px solid var(--border-color); white-space: nowrap; flex-shrink: 0; }
   .form-row { grid-template-columns: 1fr; }
   .profile-form { max-width: 100%; }
+  .rewards-summary { grid-template-columns: 1fr; }
+  .reward-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .reward-redeem-body { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
   .account-header { flex-direction: column; align-items: flex-start; }
+  .reward-grid { grid-template-columns: 1fr; }
 }

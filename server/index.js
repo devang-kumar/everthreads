@@ -20,15 +20,13 @@ app.use(cors({
   credentials: true
 }));
 
+app.use('/api/payment/webhook', express.raw({ type: 'application/json' }));
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 // ── Razorpay webhook needs raw body for HMAC verification ──
-app.use('/api/payment/webhook', express.raw({ type: 'application/json' }), (req, res, next) => {
-  if (Buffer.isBuffer(req.body)) req.body = JSON.parse(req.body.toString());
-  next();
-});
 
 // ── Static files — serve React frontend build ──
 // React build output is at ../client/dist relative to server/
@@ -46,6 +44,7 @@ app.use('/api/inventory', require('./routes/inventory'));
 app.use('/api/payment',   require('./routes/payment'));
 app.use('/api/coupons',   require('./routes/coupons'));
 app.use('/api/returns',   require('./routes/returns'));
+app.use('/api/rewards',   require('./routes/rewards'));
 app.use('/api/settings',  require('./routes/settings'));
 app.use('/api/reviews',   require('./routes/reviews'));
 app.use('/api/reports',   require('./routes/reports'));

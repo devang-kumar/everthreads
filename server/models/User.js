@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema({
   role:      { type: String, enum: ['user','admin'], default: 'user' },
   addresses: [addressSchema],
   wishlist:  [{ type: Number }],   // product IDs
+  coins:     { type: Number, default: 0, min: 0 },
   isActive:  { type: Boolean, default: true },
   lastLogin: Date,
   resetPasswordToken:   String,

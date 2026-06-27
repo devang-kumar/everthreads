@@ -62,8 +62,8 @@ const UPI_APPS = [
 ]
 
 export default function Checkout() {
-  const { cart, cartTotal, clearCart } = useCart()
-  const { user, isLoggedIn } = useAuth()
+  const { cart, cartTotal, clearCart, replaceCartItems } = useCart()
+  const { user, logout, updateUser, isLoggedIn } = useAuth()
   const navigate = useNavigate()
 
   const [step, setStep] = useState(1)
@@ -77,13 +77,17 @@ export default function Checkout() {
   })
 
   const [paymentMethod, setPaymentMethod] = useState('upi')
-  const [upiId, setUpiId] = useState('')
-  const [upiError, setUpiError] = useState('')
 
   const [coupon, setCoupon] = useState('')
   const [couponLoading, setCouponLoading] = useState(false)
   const [discount, setDiscount] = useState(0)
   const [couponApplied, setCouponApplied] = useState('')
+
+  const cartItemsPayload = () => cart.map(i => ({
+    productId: i.productId,
+    size: i.size,
+    qty: i.qty
+  }))
 
   // Pricing
   const isOnline = paymentMethod !== 'cod'
@@ -105,10 +109,11 @@ export default function Checkout() {
       const { data } = await api.post('/coupons/validate', {
         code: coupon.trim(),
         orderValue: cartTotal,
-        userId: user?._id
+        items: cartItemsPayload(),
+        paymentMethod: isOnline ? 'razorpay' : 'cod'
       })
       setDiscount(data.discount)
-      setCouponApplied(coupon.toUpperCase().trim())
+      setCouponApplied(data.coupon?.code || coupon.toUpperCase().trim())
       toast.success(`Coupon applied! Saved ${fmt(data.discount)} 🎉`)
     } catch (err) {
       toast.error(err.response?.data?.message || 'Invalid coupon code')
@@ -117,6 +122,32 @@ export default function Checkout() {
   }
 
   const removeCoupon = () => { setDiscount(0); setCouponApplied(''); setCoupon('') }
+
+  const syncCoinBalance = (coinsBalance) => {
+    if (coinsBalance !== undefined && user) {
+      updateUser({ ...user, coins: coinsBalance })
+    }
+  }
+
+  const handleAuthError = (err) => {
+    if (err.response?.status === 401) {
+      logout()
+      toast.error('Please log in again to continue checkout')
+      navigate('/login')
+      return true
+    }
+    return false
+  }
+
+  const handleQuoteChange = (quote) => {
+    if (!quote) return false
+    if (quote.items?.length) replaceCartItems(quote.items)
+    if (quote.couponCode) setCouponApplied(quote.couponCode)
+    if (quote.couponDiscount !== undefined) setDiscount(quote.couponDiscount)
+    toast.error('Cart totals changed. Please review checkout again.')
+    setStep(2)
+    return true
+  }
 
   // ── Address validation ──
   const validateAddress = () => {
@@ -136,11 +167,14 @@ export default function Checkout() {
     try {
       const { data } = await api.post('/orders', buildOrderPayload({ paymentMethod: 'cod' }))
       if (data.success) {
+        syncCoinBalance(data.coinsBalance)
         clearCart()
         toast.success('Order placed! 🎉 Pay on delivery.')
         navigate('/account')
       }
     } catch (err) {
+      if (handleAuthError(err)) { setLoading(false); return }
+      if (handleQuoteChange(err.response?.data?.quote)) { setLoading(false); return }
       toast.error(err.response?.data?.message || 'Failed to place order')
     }
     setLoading(false)
@@ -154,19 +188,32 @@ export default function Checkout() {
     try {
       // 1. Create Razorpay order on backend
       const { data: rzpData } = await api.post('/payment/create-order', {
-        amount: total,
+        items: cartItemsPayload(),
+        couponCode: couponApplied || undefined,
+        subtotal: cartTotal,
+        discount: discount + prepaidDiscount,
+        shipping,
+        codFee,
+        total,
+        paymentMethod: 'razorpay',
         currency: 'INR',
-        notes: { userEmail: user.email }
       })
+
+      if (rzpData.quote && Math.round(rzpData.quote.total) !== Math.round(total)) {
+        handleQuoteChange(rzpData.quote)
+        setLoading(false)
+        return
+      }
 
       // 2. Demo mode — skip Razorpay UI
       if (rzpData.demo) {
         const { data } = await api.post('/orders', buildOrderPayload({
           paymentMethod: 'demo',
-          paymentId: 'DEMO_' + Date.now(),
+          paymentId: `DEMO_${rzpData.order.id}`,
           razorpayOrderId: rzpData.order.id
         }))
         if (data.success) {
+          syncCoinBalance(data.coinsBalance)
           clearCart()
           toast.success('Demo order placed! 🎉')
           navigate('/account')
@@ -199,11 +246,14 @@ export default function Checkout() {
       }))
 
       if (orderData.success) {
+        syncCoinBalance(orderData.coinsBalance)
         clearCart()
         toast.success('Payment successful! Order placed 🎉')
         navigate('/account')
       }
     } catch (err) {
+      if (handleAuthError(err)) { setLoading(false); return }
+      if (handleQuoteChange(err.response?.data?.quote)) { setLoading(false); return }
       if (err.message === 'Payment cancelled by user') {
         toast('Payment cancelled')
       } else {

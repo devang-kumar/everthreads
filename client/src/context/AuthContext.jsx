@@ -7,7 +7,13 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try { return JSON.parse(localStorage.getItem('bc_user') || 'null') } catch { return null }
   })
-  const [loading, setLoading] = useState(false)
+  const [loading] = useState(false)
+
+  useEffect(() => {
+    const handleAuthLogout = () => setUser(null)
+    window.addEventListener('bc_auth_logout', handleAuthLogout)
+    return () => window.removeEventListener('bc_auth_logout', handleAuthLogout)
+  }, [])
 
   const login = async (email, password) => {
     const { data } = await api.post('/auth/login', { email, password })
@@ -42,7 +48,7 @@ export function AuthProvider({ children }) {
   }
 
   const isAdmin = () => user?.role === 'admin'
-  const isLoggedIn = () => !!user
+  const isLoggedIn = () => !!user && !!localStorage.getItem('bc_token')
 
   return (
     <AuthContext.Provider value={{ user, loading, login, register, logout, updateUser, isAdmin, isLoggedIn }}>

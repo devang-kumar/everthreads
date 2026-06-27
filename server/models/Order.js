@@ -39,9 +39,17 @@ const orderSchema = new mongoose.Schema({
   shipping:      { type: Number, default: 0 },
   codFee:        { type: Number, default: 0 },
   total:         { type: Number, required: true },
-  paymentMethod: { type: String, enum: ['razorpay','cod','demo'], required: true },
+  paymentMethod: { type: String, enum: ['razorpay','cod','demo','coins'], required: true },
   paymentId:     String,
   razorpayOrderId: String,
+  coinsEarned:   { type: Number, default: 0 },
+  coinsRedeemed: { type: Number, default: 0 },
+  coinsRefunded: { type: Number, default: 0 },
+  rewardRedemption: {
+    isReward: { type: Boolean, default: false },
+    productId: Number,
+    size: String
+  },
   status: {
     type: String,
     enum: ['pending','confirmed','processing','packed','shipped','out_for_delivery','delivered','cancelled','returned'],

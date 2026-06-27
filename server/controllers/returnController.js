@@ -3,6 +3,7 @@ const Order = require('../models/Order');
 const Product = require('../models/Product');
 const InventoryLog = require('../models/Inventory');
 const AuditLog = require('../models/AuditLog');
+const User = require('../models/User');
 
 const audit = (req, action, entity, entityId, details) =>
   AuditLog.create({ admin: req.user._id, adminEmail: req.user.email, action, entity, entityId: String(entityId), details, ip: req.ip, userAgent: req.headers['user-agent'] }).catch(() => {});
@@ -59,6 +60,7 @@ exports.updateReturnStatus = async (req, res) => {
     const { status, adminNote, refundId } = req.body;
     const ret = await Return.findById(req.params.id);
     if (!ret) return res.status(404).json({ success: false, message: 'Return not found' });
+    const prevStatus = ret.status;
 
     ret.status = status;
     if (adminNote) ret.adminNote = adminNote;
@@ -66,7 +68,7 @@ exports.updateReturnStatus = async (req, res) => {
     ret.timeline.push({ status, message: adminNote || `Return ${status}`, by: req.user.email });
 
     // If approved → restore inventory
-    if (status === 'received') {
+    if (status === 'received' && prevStatus !== 'received') {
       for (const item of ret.items) {
         const product = await Product.findOne({ productId: item.productId });
         if (product) {
@@ -74,6 +76,7 @@ exports.updateReturnStatus = async (req, res) => {
           if (variant) {
             const before = variant.stock;
             variant.stock += item.qty;
+            product.totalSold = Math.max(0, (product.totalSold || 0) - item.qty);
             await product.save();
             await InventoryLog.create({
               productId: item.productId, productName: item.name,
@@ -87,7 +90,33 @@ exports.updateReturnStatus = async (req, res) => {
 
     // Mark order as returned
     if (status === 'refunded') {
-      await Order.findByIdAndUpdate(ret.order, { isRefunded: true, refundAmount: ret.refundAmount, status: 'returned' });
+      const order = await Order.findById(ret.order);
+      if (order) {
+        order.isRefunded = true;
+        order.refundAmount = ret.refundAmount;
+        order.status = 'returned';
+        order.tracking.push({
+          status: 'returned',
+          message: adminNote || 'Return refunded',
+          location: 'Returns'
+        });
+
+        if (order.user && order.coinsEarned > 0) {
+          const user = await User.findById(order.user).select('coins');
+          if (user) {
+            user.coins = Math.max(0, (user.coins || 0) - order.coinsEarned);
+            order.coinsEarned = 0;
+            await user.save();
+          }
+        }
+
+        if (order.user && order.coinsRedeemed > 0 && !order.coinsRefunded) {
+          await User.findByIdAndUpdate(order.user, { $inc: { coins: order.coinsRedeemed } });
+          order.coinsRefunded = order.coinsRedeemed;
+        }
+
+        await order.save();
+      }
     }
 
     await ret.save();

@@ -14,6 +14,7 @@ const sendToken = (user, statusCode, res) => {
       email:     user.email,
       phone:     user.phone,
       role:      user.role,
+      coins:     user.coins || 0,
       wishlist:  user.wishlist,
       addresses: user.addresses
     }

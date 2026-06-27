@@ -14,6 +14,7 @@ const STATUS_COLORS = {
 
 const TABS = [
   { id:'orders',   icon:'fa-box',          label:'My Orders' },
+  { id:'rewards',  icon:'fa-coins',        label:'Rewards' },
   { id:'returns',  icon:'fa-undo',         label:'Returns' },
   { id:'profile',  icon:'fa-user',         label:'Profile' },
   { id:'address',  icon:'fa-map-marker-alt', label:'Addresses' },
@@ -44,15 +45,25 @@ export default function Account() {
   const [savingAddr, setSavingAddr] = useState(false)
   const [addresses, setAddresses] = useState([])
 
+  // Rewards
+  const [rewardCost, setRewardCost] = useState(800)
+  const [rewardProducts, setRewardProducts] = useState([])
+  const [rewardsLoading, setRewardsLoading] = useState(false)
+  const [redeeming, setRedeeming] = useState(false)
+  const [selectedReward, setSelectedReward] = useState(null)
+  const [selectedRewardSize, setSelectedRewardSize] = useState('')
+  const [rewardAddressId, setRewardAddressId] = useState('')
+
   useEffect(() => {
     if (!isLoggedIn()) { navigate('/login'); return }
     setProfile({ firstName: user.firstName, lastName: user.lastName, phone: user.phone || '' })
     setAddresses(user.addresses || [])
     fetchOrders()
     fetchReturns()
+    fetchRewards()
   }, [])
 
-  const fetchOrders = async () => {
+  async function fetchOrders() {
     setLoading(true)
     try {
       const { data } = await api.get('/orders/myorders')
@@ -61,11 +72,30 @@ export default function Account() {
     setLoading(false)
   }
 
-  const fetchReturns = async () => {
+  async function fetchReturns() {
     try {
       const { data } = await api.get('/returns/mine')
       setReturns(data.returns || [])
     } catch { setReturns([]) }
+  }
+
+  async function fetchRewards() {
+    setRewardsLoading(true)
+    try {
+      const { data } = await api.get('/rewards')
+      setRewardCost(data.rewardCost || 800)
+      setRewardProducts(data.products || [])
+      if (data.coins !== undefined) updateUser({ ...user, coins: data.coins })
+    } catch { setRewardProducts([]) }
+    setRewardsLoading(false)
+  }
+
+  const selectReward = (product) => {
+    const firstInStock = product.variants?.find(v => v.stock > 0)
+    const defaultAddress = addresses.find(a => a.isDefault) || addresses[0]
+    setSelectedReward(product)
+    setSelectedRewardSize(firstInStock?.size || '')
+    setRewardAddressId(defaultAddress?._id || '')
   }
 
   const handleProfileSave = async (e) => {
@@ -123,8 +153,43 @@ export default function Account() {
     if (!window.confirm('Cancel this order?')) return
     try {
       const { data } = await api.put(`/orders/${orderId}/cancel`)
-      if (data.success) { toast.success('Order cancelled'); fetchOrders() }
+      if (data.success) {
+        if (data.coinsBalance !== undefined) updateUser({ ...user, coins: data.coinsBalance })
+        setSelectedOrder(prev => prev?.orderId === data.order?.orderId ? data.order : prev)
+        setOrders(prev => prev.map(o => o.orderId === data.order?.orderId ? data.order : o))
+        toast.success('Order cancelled')
+        fetchOrders()
+      }
     } catch (err) { toast.error(err.response?.data?.message || 'Cannot cancel order') }
+  }
+
+  const handleRedeemReward = async () => {
+    if (!selectedReward) return
+    if ((user?.coins || 0) < rewardCost) { toast.error(`You need ${rewardCost} coins to redeem`); return }
+    if (!selectedRewardSize) { toast.error('Choose a size'); return }
+    const address = addresses.find(a => a._id === rewardAddressId)
+    if (!address) { toast.error('Choose a delivery address'); return }
+
+    setRedeeming(true)
+    try {
+      const { data } = await api.post('/rewards/redeem', {
+        productId: selectedReward.productId,
+        size: selectedRewardSize,
+        address
+      })
+      if (data.success) {
+        updateUser(data.user || { ...user, coins: data.coinsBalance })
+        toast.success('Reward item redeemed')
+        setSelectedReward(null)
+        setSelectedRewardSize('')
+        setRewardAddressId('')
+        fetchOrders()
+        fetchRewards()
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Could not redeem reward')
+    }
+    setRedeeming(false)
   }
 
   const setA = k => e => setAddrForm(f => ({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }))
@@ -138,9 +203,15 @@ export default function Account() {
             <h1>My Account</h1>
             <p>Welcome back, <strong>{user?.firstName}</strong>! 👋</p>
           </div>
-          <button className="btn-outline-dark" onClick={() => { logout(); navigate('/') }}>
-            <i className="fa fa-sign-out-alt" /> Sign Out
-          </button>
+          <div className="account-header-actions">
+            <div className="coin-balance-chip">
+              <i className="fa fa-coins" />
+              <span>{user?.coins || 0} coins</span>
+            </div>
+            <button className="btn-outline-dark" onClick={() => { logout(); navigate('/') }}>
+              <i className="fa fa-sign-out-alt" /> Sign Out
+            </button>
+          </div>
         </div>
 
         <div className="account-layout">
@@ -226,6 +297,9 @@ export default function Account() {
                         {selectedOrder.discount > 0 && <div className="price-row green"><span>Discount</span><span>−{fmt(selectedOrder.discount)}</span></div>}
                         <div className="price-row"><span>Shipping</span><span>{selectedOrder.shipping === 0 ? 'FREE' : fmt(selectedOrder.shipping)}</span></div>
                         {selectedOrder.codFee > 0 && <div className="price-row"><span>COD Fee</span><span>{fmt(selectedOrder.codFee)}</span></div>}
+                        {selectedOrder.coinsEarned > 0 && <div className="price-row green"><span>Coins earned</span><span>+{selectedOrder.coinsEarned}</span></div>}
+                        {selectedOrder.coinsRedeemed > 0 && <div className="price-row"><span>Coins redeemed</span><span>{selectedOrder.coinsRedeemed}</span></div>}
+                        {selectedOrder.coinsRefunded > 0 && <div className="price-row green"><span>Coins refunded</span><span>+{selectedOrder.coinsRefunded}</span></div>}
                         <div className="price-row total"><span>Total</span><span>{fmt(selectedOrder.total)}</span></div>
                       </div>
 
@@ -287,6 +361,106 @@ export default function Account() {
             )}
 
             {/* ── RETURNS ── */}
+            {tab === 'rewards' && (
+              <div>
+                <h2>Rewards</h2>
+
+                <div className="rewards-summary">
+                  <div>
+                    <span className="rewards-eyebrow">EverThread Coins</span>
+                    <strong>{user?.coins || 0}</strong>
+                    <p>Earn 20 coins every time an order is placed successfully.</p>
+                  </div>
+                  <div className="rewards-progress-wrap">
+                    <div className="rewards-progress-meta">
+                      <span>{Math.min(user?.coins || 0, rewardCost)} / {rewardCost}</span>
+                      <span>{Math.max(0, rewardCost - (user?.coins || 0))} to redeem</span>
+                    </div>
+                    <div className="rewards-progress">
+                      <span style={{ width: `${Math.min(100, ((user?.coins || 0) / rewardCost) * 100)}%` }} />
+                    </div>
+                  </div>
+                </div>
+
+                {rewardsLoading ? (
+                  <div style={{ textAlign:'center', padding:40 }}><i className="fa fa-spinner fa-spin" style={{ fontSize:24, color:'#ddd' }} /></div>
+                ) : rewardProducts.length === 0 ? (
+                  <div className="empty-state">
+                    <i className="fa fa-gift" />
+                    <p>No reward items available right now</p>
+                  </div>
+                ) : (
+                  <div className="reward-grid">
+                    {rewardProducts.map(product => {
+                      const inStock = product.variants?.some(v => v.stock > 0)
+                      const canRedeem = (user?.coins || 0) >= rewardCost && inStock
+                      return (
+                        <div key={product._id} className="reward-card">
+                          <div className="reward-img">
+                            {product.images?.[0] ? <img src={product.images[0]} alt={product.name} /> : <i className="fa fa-tshirt" />}
+                          </div>
+                          <div className="reward-info">
+                            <h3>{product.name}</h3>
+                            <p>{fmt(product.price)} item</p>
+                            <button className="btn-primary" disabled={!canRedeem} onClick={() => selectReward(product)}>
+                              {canRedeem ? `Redeem for ${rewardCost}` : (inStock ? 'Need more coins' : 'Out of stock')}
+                            </button>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+
+                {selectedReward && (
+                  <div className="reward-redeem-panel">
+                    <div className="reward-redeem-header">
+                      <div>
+                        <span className="rewards-eyebrow">Redeem Item</span>
+                        <h3>{selectedReward.name}</h3>
+                      </div>
+                      <button onClick={() => setSelectedReward(null)}><i className="fa fa-times" /></button>
+                    </div>
+
+                    <div className="reward-redeem-body">
+                      <div className="form-group">
+                        <label>Size</label>
+                        <select value={selectedRewardSize} onChange={e => setSelectedRewardSize(e.target.value)}>
+                          {selectedReward.variants?.filter(v => v.stock > 0).map(v => (
+                            <option key={v.size} value={v.size}>{v.size}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="form-group">
+                        <label>Delivery Address</label>
+                        {addresses.length > 0 ? (
+                          <select value={rewardAddressId} onChange={e => setRewardAddressId(e.target.value)}>
+                            {addresses.map(a => (
+                              <option key={a._id} value={a._id}>
+                                {a.label || 'Address'} - {a.line1}, {a.city}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <button className="btn-outline-dark" onClick={() => setTab('address')}>
+                            <i className="fa fa-plus" /> Add Address
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="reward-redeem-footer">
+                      <span>{rewardCost} coins will be deducted.</span>
+                      <button className="btn-primary" onClick={handleRedeemReward} disabled={redeeming || !addresses.length}>
+                        {redeeming ? 'Redeeming...' : 'Confirm Redemption'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {tab === 'returns' && (
               <div>
                 <h2>My Returns</h2>

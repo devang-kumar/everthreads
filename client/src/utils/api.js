@@ -19,6 +19,7 @@ api.interceptors.response.use(
     if (err.response?.status === 401) {
       localStorage.removeItem('bc_token')
       localStorage.removeItem('bc_user')
+      window.dispatchEvent(new Event('bc_auth_logout'))
     }
     return Promise.reject(err)
   }
